@@ -5,37 +5,98 @@
     <link rel="stylesheet" href="/index.css">
     <meta name="viewport" content="width=device-width,height=device-height initial-scale=1.0">
     <title>Chatting App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 
 <body>
-    <div class="selectRoom">
-        <form class="select" action="#">
-            <input id="room" type="text">
-            <button>선택</button>
-        </form>
+    <div class="container" id="loginform">
+        <div class="title">
+            <h1>WebChat</h1>
+        </div>
+        <div class="form">
+            <form id="login" action="#">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="text" class="form-control" id="userid">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                        else.</small>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" id="password">
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+            </form>
+        </div>
     </div>
-    <div class="chatting">
-        <ul class="chat-list">
-            <!-- 대화 내용이 들어갑니다. -->
-        </ul>
-        <form class="chat" action="#">
-            <input id="data" type="text">
-            <button onclick="submit()">submit</button>
-        </form>
+    <div class="container list-group" id="main">
+        <div class="form">
+            <div class="header list-group-item active">
+                <h2>WebChat</h2>
+            </div>
+            <div class="contents">
+                <ul class="room-list list ">
+                    <!-- 대화방 리스트 -->
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="choose">
-        <button onclick="exit()">
-            나가기
-        </button>
+    <div class="container room" id="room">
+        <div class="form">
+            <nav>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a id="toMain" class="nav-link" href="#">메인</a>
+                    </li>
+                    <li class="nav-item title">
+                        방이름
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            메뉴
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                </ul>
+
+            </nav>
+            <div class="chatting contents">
+                <ul class="chat-list list list-group list-group-flush" id="conversList">
+                    <!-- 대화 내용이 들어갑니다. -->
+                </ul>
+                <div class="input-group">
+                    <form action="#" class="chat">
+                        <input id="data" type="text" class="form-control">
+                        <div class="input-group-append" id="button-addon4">
+                            <button class="btn btn-outline-secondary" type="submit">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <ul class="room-list">
-            <!-- 대화방 리스트 -->
-        </ul>
-    </div>
-    <script src="/script.js" ></script>
+    <script src="/script.js"></script>
 </body>
 
 </html>
