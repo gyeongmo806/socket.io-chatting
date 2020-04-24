@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,height=device-height initial-scale=1.0">
+    <title>Chatting App</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+    <div class="selectRoom">
+        <form class="select" action="#">
+            <input id="room" type="text">
+            <button>선택</button>
+        </form>
+    </div>
+    <div class="chatting">
+        <ul class="chat-list">
+            <!-- 대화 내용이 들어갑니다. -->
+        </ul>
+        <form class="chat" action="#">
+            <input id="data" type="text">
+            <button onclick="submit()">submit</button>
+        </form>
+    </div>
+    <div class="choose">
+        <button onclick="exit()">
+            나가기
+        </button>
+    </div>
+    <div>
+        <ul class="room-list">
+            <!-- 대화방 리스트 -->
+        </ul>
+    </div>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+        body {
+            width: 100%;
+            height: 100%;
+        }
+        .chatting {
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            width: 50%;
+            height: 100%;
+        }
+        .chat-list {
+            height: 800px;
+            border: 1px solid black;
+            list-style-type: none;
+        }
+        .chat-list li:nth-child(even){
+            background-color: rgb(231, 231, 231);
+        }
+        .chat {
+            display: flex;
+        }
+        .chat input {
+            height: 60px;
+            width: 100%;
+        }
+        .chat button {
+            width: 100px;
+        }
+    </style>
+    <script>
+        $(document).ready(() => {
+            fetch('/getList').then(response => {
+                return response.json()
+            }).then(json => {
+                json.map(data => {
+                    $('.room-list').append($('<li>').append($(`<a href='#' id='toRoom'>`).text(data.name)))
+                })
+                $('a').click(e => {
+                    var room = e.target.textContent
+                    if(this.roomName != undefined){
+                        socket.emit('exit',this.roomName)
+                    }
+                    socket.emit('selectroom', room)
+                })
+            })
+            
+        })
+        
+        var socket = io()
+        $('.select').submit((e) => {
+            e.preventDefault()
+            var room = $('#room').val()
+            console.log(room)
+            socket.emit('selectroom', room)
+        })
+        $('.chat').submit((e) => {
+            e.preventDefault()
+            var msg = $('#data').val()
+            socket.emit('chat',msg,roomName)
+            console.log("send message :"+msg)
+            $('#data').val("")
+        })
+        socket.on('check room', msg => {
+            console.log(msg)
+        })
+        socket.on('status', status => {
+            console.log(404)
+            if(status == 404){
+                alert("Can't find the room")
+            }
+        })
+        socket.on('chat', msg => {
+            $('.chat-list').append($('<li>').text(msg))
+        })
+        socket.on('room', room => {
+            roomName = room
+        })
+        exit = () => {
+            if(confirm("이 방에서 나가시겠습니까?")){
+                socket.emit('exit',roomName)
+                $('.chat-list').text("")
+            }
+        }
+    </script>
+    
+</body>
+
+</html>
