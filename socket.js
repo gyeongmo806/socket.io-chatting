@@ -5,12 +5,10 @@ function e (io){
             name: 'myroom1',
             index: '0',
             userId: [
-                'jip080620'
+                'jip080620',
+                'msmarin'
             ],
             conv : [
-                {
-                    
-                }
             ]
         },
         {
@@ -44,15 +42,14 @@ function e (io){
                 'jip080620'
             ],
             conv : [
-                {
-                    
-                }
             ]
         }
     ]
     let user = {
         jip080620: ['myroom1','myroom2', 'myroom3'],
-        msmarin: []
+        msmarin: ['myroom1'],
+        jip0806:[],
+        marin3:[]
     }
     io.on('connection', (socket) => {
         socket.on('login', inform => {
@@ -76,10 +73,13 @@ function e (io){
         
         //chat to room people
         socket.on('chat', (msg,inform) => {
-            io.to(inform.room).emit('chat',inform.id + ": " + msg)
+            io.to(inform.room).emit('chat',inform.id , msg)
             var d = new Date()
-            data[inform.roomIndex].conv.push({time: d,contents: msg,id: inform.id})
-            console.log(data[inform.roomIndex].conv)
+            data.map(data => {
+                if(inform.room == data.name){
+                    data.conv.push({time: d,contents: msg,id: inform.id})
+                }
+            })
         })
         //invite people into now on room
         socket.on('invite', (inviteId ,inform) => {
@@ -88,8 +88,9 @@ function e (io){
                 data[i].userId.push(inviteId)
                 user[inviteId].push(inform.room)
                 console.log(data)
+                console.log(user)
                 console.log("invited : "+inviteId)
-                socket.emit('invite', "invited : "+inviteId)
+                socket.emit('invite', "invited : "+inviteId,inviteId)
             }
         })
     })

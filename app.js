@@ -15,18 +15,40 @@ app.get('/getList/:id', (req,res) => {
     var userId = req.params.id
     var list = []
     i.user[userId].map(x => {
-        console.log("id have room "+x)
         i.data.map(data => {
-            //console.log(data.name)
             if(data.name == x){
-                console.log(x)
                 list.push(data)
             }
         })
         
     })
-    console.log(list)
     res.send(list)
+})
+app.get('/data/:room', (req,res) => {
+    var room = req.params.room
+    var user = Object.keys(i.user)
+    var rlist
+    
+    var data = i.data.map(data => {
+        if(data.name == room) {
+            rlist = data.userId
+            console.log(rlist)
+        }
+    })
+    console.log(user)
+    console.log(rlist)
+    var newlist = []
+    rlist.map(aleadyId => {
+        // console.log(aleadyId)
+        user.map(allid => {
+            if(allid != aleadyId){
+                newlist.push(allid)
+            }
+        })
+    })
+    console.log(newlist)
+    // console.log(alist)
+    res.send(newlist)
 })
 // io.on('connection', (socket) => {
 //     socket.on('selectroom', room => {

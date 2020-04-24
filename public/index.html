@@ -20,6 +20,7 @@
 </head>
 
 <body>
+    <!-- 로그인폼 -->
     <div class="container" id="loginform">
         <div class="title">
             <h1>WebChat</h1>
@@ -44,6 +45,7 @@
             </form>
         </div>
     </div>
+    <!-- 메인화면 -->
     <div class="container list-group" id="main">
         <div class="form">
             <div class="header list-group-item active">
@@ -56,6 +58,7 @@
             </div>
         </div>
     </div>
+    <!-- 채팅방 안 -->
     <div class="container room" id="room">
         <div class="form">
             <nav>
@@ -72,10 +75,13 @@
                             메뉴
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                            <!-- 참여중인 이용자 ID가 들어갑니다. -->
+                            <div class="dropdown-item invite">
+                                
+                                <button onclick="invitelist()" type="button" class="btn btn-block text-center" data-toggle="modal" data-target="#exampleModal">
+                                    +
+                                </button>
+                            </div>
                         </div>
                     </li>
                 </ul>
@@ -94,6 +100,35 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- invite 모달 -->
+    <!-- Button trigger modal -->
+    
+    
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">사용자 추가</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h7 class="modal-body" id="exampleModalLabel">초대할 사용자를 입력하세요.</h7>
+                <P></P>
+                <div class="input-group">
+                    <select class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon">
+                      <!-- option태그 id가 들어감 -->
+                    </select>
+                    <div class="input-group-append">
+                      <button onclick="invite()" class="btn btn-outline-secondary" type="button">Button</button>
+                    </div>
+                  </div>
+            </div>
+        </div>
         </div>
     </div>
     <script src="/script.js"></script>

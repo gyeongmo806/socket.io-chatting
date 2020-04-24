@@ -106,12 +106,29 @@ socket.on('login', msg => {
                 }).then(json => {
                     room = json
                     var roomname =e.target.textContent
-                    var conv = room[index[roomname]].conv
-                    inform.roomIndex = index[roomname]
-                    conv.map(data => {
-                        console.log(data)
-                        console.log("datamapping")
-                        $('.chat-list').append($('<li>').addClass('list-group-item').text(data.contents))
+                    console.log(room)
+                    //대화대용 가져오기
+                    room.map(data => {
+                        //데이터의 아이디와 지금 아이디가 같으면 우로 아니면 좌로 정렬
+                        if(data.name == roomname){
+                            console.log(data)
+                            data.conv.map(data => {
+                                if(data.id == inform.id){
+                                    $('.chat-list').append($('<li>').addClass('list-group-item text-right').text(data.contents))
+                                } else {
+                                    console.log(data.id)
+                                    $('.chat-list').append($('<li>').addClass('list-group-item').text(data.id + " : " + data.contents))
+                                }
+                            })
+                        }
+                    })
+                    //초대 되있는 사람 ID
+                    room.map(data => {
+                        if(data.name == roomname){
+                            data.userId.map(data => {
+                                $('.invite').before($('<div class="dropdown-item convuser">').text(data))
+                            })
+                        }
                     })
                     inform.room = roomname
                     console.log(inform.room)
@@ -125,18 +142,15 @@ socket.on('login', msg => {
     }
     
 })
-//초대하기
-$('#invite').submit(e => {
-    e.preventDefault()
-    socket.emit('invite', $('#inviteId').val() ,inform)
-})
-socket.on('invite', msg => {
-    console.log(msg)
-})
+
 //메세지 받기
-socket.on('chat', msg => {
+socket.on('chat', (id, msg) => {
     console.log(msg)
-    $('.chat-list').append($('<li>').addClass('list-group-item').text(msg))
+    if(inform.id == id){
+        $('.chat-list').append($('<li>').addClass('list-group-item text-right').text(msg))
+    } else {
+        $('.chat-list').append($('<li>').addClass('list-group-item ').text(id + " : " + msg))
+    }
     var elem = document.getElementById('conversList')
     elem.scrollTop = elem.scrollHeight;
 })
@@ -145,7 +159,8 @@ socket.on('enter', msg => {
     $('.title').text(inform.room)
     $('#main').hide()
     $('#room').show()
-
+    var elem = document.getElementById('conversList')
+    elem.scrollTop = elem.scrollHeight;
 })
 //메세지 전송
 $('.chat').submit((e) => {
@@ -160,6 +175,31 @@ $('.chat').submit((e) => {
 toMain = () => {
     $('#room').hide()
     $('#main').show()
+    $('.convuser').remove()
     $('#conversList').children().remove()
+    $('.custom-select').children().remove()
 }
-socket.emit('invite', 'msmarin',inform)
+invitelist =() => {
+    fetch('/data/'+inform.room).then(response => {
+        return response.json()
+    }).then(json => {
+        $(`#inputGroupSelect04`).children().remove()
+        json.map(user => {
+            $('#inputGroupSelect04').append($(`<option value="${user}">`).text(user))
+        })
+        
+    })
+}
+//초대하기
+socket.on('invite', (msg, del) => {
+    console.log($(`option[value=${del}]`).remove())
+    console.log(msg)
+})
+
+invite = () => {    
+    socket.emit('invite', $('.custom-select').val(),inform)
+}
+
+// $('#myModal').on('shown.bs.modal', function () {
+//     $('#myInput').trigger('focus')
+// })
