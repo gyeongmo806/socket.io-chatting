@@ -1,6 +1,10 @@
-const app = require('express')();
+
+const express = require('express')
+const app = express();
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
+
+app.use(express.static('public'))
 
 var data = [
     {
@@ -34,9 +38,6 @@ io.on('connection', (socket) => {
             socket.emit('status', 404)
         }        
     })
-    setInterval(()=>{
-        io.to('friends').emit('chat', "hello")
-    },3000)
     socket.on('chat', (msg,rooms) => {
         console.log(rooms)
         io.to(rooms).emit('chat',socket.id + ": " +msg)

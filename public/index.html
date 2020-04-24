@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="/index.css">
+    <meta name="viewport" content="width=device-width,height=device-height initial-scale=1.0">
+    <title>Chatting App</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+    <div class="selectRoom">
+        <form class="select" action="#">
+            <input id="room" type="text">
+            <button>선택</button>
+        </form>
+    </div>
+    <div class="chatting">
+        <ul class="chat-list">
+            <!-- 대화 내용이 들어갑니다. -->
+        </ul>
+        <form class="chat" action="#">
+            <input id="data" type="text">
+            <button onclick="submit()">submit</button>
+        </form>
+    </div>
+    <div class="choose">
+        <button onclick="exit()">
+            나가기
+        </button>
+    </div>
+    <div>
+        <ul class="room-list">
+            <!-- 대화방 리스트 -->
+        </ul>
+    </div>
+    <script src="/script.js" ></script>
+</body>
+
+</html>
