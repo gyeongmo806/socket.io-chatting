@@ -7,10 +7,22 @@ body {
     height: 100%;
 }
 
+.list-group-item, .header{
+    height: 60px;
+}
+
+.form {
+    position: absolute;
+    right: 100px;
+    bottom: 20px;
+    max-width: 300px;
+}
+
 .nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 60px;
 }
 
 .list {
@@ -21,9 +33,12 @@ body {
 .form {
     width: 300px;
 }
+.chat-list {
+    display: flex;
+    height: 431px;
+}
 .chat {
     display: flex;
-    width: 100%;
 }
 
 

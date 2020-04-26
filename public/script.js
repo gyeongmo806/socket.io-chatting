@@ -1,205 +1,123 @@
-// $(document).ready(() => {
-//     fetch('/getList').then(response => {
-//         return response.json()
-//     }).then(json => {
-//         json.map(data => {
-//             $('.room-list').append($('<li>').append($(`<a href='#' id='toRoom'>`).text(data.name)))
-//         })
-//         $('a').click(e => {
-//             var room = e.target.textContent
-//             if(this.roomName != undefined){
-//                 socket.emit('exit',this.roomName)
-//             }
-//             socket.emit('selectroom', room)
-//         })
-//     })
-    
-// })
+var selectRoom
+var userid
 
-// var socket = io()
-// $('.select').submit((e) => {
-//     e.preventDefault()
-//     var room = $('#room').val()
-//     console.log(room)
-//     socket.emit('selectroom', room)
-// })
-// $('.chat').submit((e) => {
-//     e.preventDefault()
-//     var msg = $('#data').val()
-//     socket.emit('chat',msg,roomName)
-//     console.log("send message :"+msg)
-//     $('#data').val("")
-// })
-// socket.on('check room', msg => {
-//     console.log(msg)
-// })
-// socket.on('status', status => {
-//     console.log(404)
-//     if(status == 404){
-//         alert("Can't find the room")
-//     }
-// })
-// socket.on('chat', msg => {
-//     $('.chat-list').append($('<li>').text(msg))
-// })
-// socket.on('room', room => {
-//     roomName = room
-// })
-// exit = () => {
-//     if(confirm("이 방에서 나가시겠습니까?")){
-//         socket.emit('exit',roomName)
-//         $('.chat-list').text("")
-//     }
-// }
-
-var inform = {
-    id : '',
-    room : '',
-    roomIndex : undefined, 
- }
- var room
-var index = {}
-//login
-
-//참여하고있는 방 리스트
-$(document).ready(() => {
-    $('#userid').val('jip080620')
-    $('#room').hide()
-    $('#main').hide()
-     //$('#loginform').hide()
-    $('#toMain').click(e => {
-            toMain()
-    })
-   
-})
-
+userid = $.cookie('id')
 var socket = io()
-//로그인
-$('#login').submit(e => {
-    e.preventDefault()
-    inform.id = $('#userid').val()
-    socket.emit('login', inform)
-})
-socket.on('login', msg => {
-    if(msg == 'success'){
-        alert('로그인 성공!')
-        
-        //로그인 화면 넘어가기
-        jQuery('#loginform').hide();  
-        $('#main').show()
-        //해당 아이디 룸 리스트 가져오기
-        fetch('/getList/'+inform.id).then(response => {
+//APPEND NODE CONTROL
+toRoom = () => {
+    //방 입장
+    $('.toRoom').click(e => {
+        selectRoom = e.target.textContent
+        socket.emit('enter', selectRoom, userid)
+        //방 데이터 불러오기
+        fetch('/data/'+selectRoom).then(response => {
             return response.json()
         }).then(json => {
-            json.map(data => {
-                console.log(data)
-                $('.room-list').append($('<li>').addClass('list-group-item d-flex justify-content-between align-items-center').append($(`<a href='#' class='toRoom'>`).text(data.name)))
-                console.log(data.index)
-                index[data.name] = data.index
-                console.log(index)
+            //대화 내용
+            json.contents.map(data => {
+                if(data.sendId == userid){
+                    $('.chat-list').append($('<li>').addClass('list-group-item text-right').text(data.contents))
+                } else {
+                    $('.chat-list').append($('<li>').addClass('list-group-item ').text(data.sendId + " : " + data.contents))
+                }
+                
             })
-            room = json
-            //방에 들어가기
-            $('.toRoom').click(e => {
-                fetch('/getList/'+inform.id).then(response => {
-                    return response.json()
-                }).then(json => {
-                    room = json
-                    var roomname =e.target.textContent
-                    console.log(room)
-                    //대화대용 가져오기
-                    room.map(data => {
-                        //데이터의 아이디와 지금 아이디가 같으면 우로 아니면 좌로 정렬
-                        if(data.name == roomname){
-                            console.log(data)
-                            data.conv.map(data => {
-                                if(data.id == inform.id){
-                                    $('.chat-list').append($('<li>').addClass('list-group-item text-right').text(data.contents))
-                                } else {
-                                    console.log(data.id)
-                                    $('.chat-list').append($('<li>').addClass('list-group-item').text(data.id + " : " + data.contents))
-                                }
-                            })
-                        }
-                    })
-                    //초대 되있는 사람 ID
-                    room.map(data => {
-                        if(data.name == roomname){
-                            data.userId.map(data => {
-                                $('.invite').before($('<div class="dropdown-item convuser">').text(data))
-                            })
-                        }
-                    })
-                    inform.room = roomname
-                    console.log(inform.room)
-                    socket.emit('enter', inform)
-                })
+            //스크롤 자동 바텀
+            var elem = document.getElementById('conversList')
+            elem.scrollTop = elem.scrollHeight;
+            //참여자
+            json.joinid.map(id => {
+                $('.invite').before($('<div class="dropdown-item convuser">').text(id))
             })
+        
         })
-    } else {
-        alert('없는 아이디 입니다.')
-
-    }
+    })
+}
+loadList = () => {
+    fetch('/getList').then(response => {
+        return response.json()
+    }).then(json => {
+        json.map(room => {
+            $('.room-list').append($('<li>').addClass('list-group-item d-flex justify-content-between align-items-center').append($(`<a href='#' class='toRoom'>`).text(room)))    
+        }) 
+        toRoom()
+    }) 
+}
+$(document).ready(() => {
     
+    $('#room').hide()
+    //대화방 가져오기
+    
+    loadList()
+   
+
+})
+//메인화면
+$('.toMain').click(e => {
+    $('#room').hide()
+    $('#main').show()
+    $('.convuser').remove()
+    
+    $('#conversList').children().remove()
+    $('.custom-select').children().remove()
+    selectRoom = undefined
 })
 
-//메세지 받기
-socket.on('chat', (id, msg) => {
-    console.log(msg)
-    if(inform.id == id){
-        $('.chat-list').append($('<li>').addClass('list-group-item text-right').text(msg))
-    } else {
-        $('.chat-list').append($('<li>').addClass('list-group-item ').text(id + " : " + msg))
-    }
-    var elem = document.getElementById('conversList')
-    elem.scrollTop = elem.scrollHeight;
-})
 //방에 들어가기
+socket.emit("conn", userid)
 socket.on('enter', msg => {
-    $('.title').text(inform.room)
+    $('.title').text(selectRoom)
     $('#main').hide()
     $('#room').show()
     var elem = document.getElementById('conversList')
     elem.scrollTop = elem.scrollHeight;
+    
 })
 //메세지 전송
 $('.chat').submit((e) => {
     e.preventDefault()
     var msg = $('#data').val()
-    socket.emit('chat',msg,inform)
+    socket.emit('chat',msg, selectRoom, userid)
+    console.log(msg,selectRoom,userid)
     console.log("send message :"+msg)
     $('#data').val("")
 })
+//메세지 받기
+socket.on('chat', (id, msg) => {
+    console.log(msg)
+    if(userid == id){
+        $('.chat-list').append($('<li>').addClass('list-group-item text-right').text(msg))
+    } else {
+        $('.chat-list').append($('<li>').addClass('list-group-item ').text(id + " : " + msg))
+    }
+    //스크롤바 자동 하단
+    var elem = document.getElementById('conversList')
+    elem.scrollTop = elem.scrollHeight;
+})
 
-//메뉴화면으로
-toMain = () => {
-    $('#room').hide()
-    $('#main').show()
-    $('.convuser').remove()
-    $('#conversList').children().remove()
-    $('.custom-select').children().remove()
+//초대하기
+socket.on('invite', (msg, del) => {
+    $('.invite').before($('<div class="dropdown-item convuser">').text(del))
+    console.log($(`option[value=${del}]`).remove())
+    console.log(msg)
+})
+invite = () => {    
+    socket.emit('invite', $('.custom-select').val(),selectRoom,userid)
 }
 invitelist =() => {
-    fetch('/data/'+inform.room).then(response => {
+    fetch('/invitelist/'+selectRoom).then(response => {
         return response.json()
     }).then(json => {
         $(`#inputGroupSelect04`).children().remove()
         json.map(user => {
             $('#inputGroupSelect04').append($(`<option value="${user}">`).text(user))
         })
-        
     })
 }
-//초대하기
-socket.on('invite', (msg, del) => {
-    console.log($(`option[value=${del}]`).remove())
-    console.log(msg)
+socket.on('your invited', (room, who) => {
+    $('.toast-body').text(who + " 님이 " + room + " 방에 초대했습니다.")
+    $('.toast').toast('show')
+    $('.room-list').append($('<li>').addClass('list-group-item d-flex justify-content-between align-items-center').append($(`<a href='#' class='toRoom'>`).text(room)))
+    toRoom()
 })
-
-invite = () => {    
-    socket.emit('invite', $('.custom-select').val(),inform)
-}
-
-// $('#myModal').on('shown.bs.modal', function () {
-//     $('#myInput').trigger('focus')
-// })
+$('.toast').toast({autohide:false})

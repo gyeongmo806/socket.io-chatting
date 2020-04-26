@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="/chatting.css">
     <meta name="viewport" content="width=device-width,height=device-height initial-scale=1.0">
     <title>Chatting App</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -17,60 +17,38 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 </head>
 
 <body>
-    <!-- 로그인폼 -->
-    <div class="container" id="loginform">
-        <div class="title">
-            <h1>WebChat</h1>
-        </div>
-        <div class="form">
-            <form id="login" action="#">
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
-                    <input type="text" class="form-control" id="userid">
-                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
-                        else.</small>
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="password">
-                </div>
-                <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                </div>
-                <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
-            </form>
-        </div>
-    </div>
     <!-- 메인화면 -->
-    <div class="container list-group" id="main">
-        <div class="form">
-            <div class="header list-group-item active">
-                <h2>WebChat</h2>
+    <div class="container list-group " id="main">
+        <div class="form ">
+            <div class="header list-group-item active bg-dark">
+                <h4>WebChat</h4>
             </div>
             <div class="contents">
                 <ul class="room-list list ">
                     <!-- 대화방 리스트 -->
                 </ul>
             </div>
+            <a href="/logout" class="btn btn-primary btn-lg btn-block">LOGOUT</a>
         </div>
+        
     </div>
     <!-- 채팅방 안 -->
     <div class="container room" id="room">
         <div class="form">
-            <nav>
-                <ul class="nav">
+            <nav class="bg-dark">
+                <ul class="nav ">
                     <li class="nav-item">
-                        <a id="toMain" class="nav-link" href="#">메인</a>
+                        <a class="nav-link toMain text-white" href="#">메인</a>
                     </li>
-                    <li class="nav-item title">
+                    <li class="nav-item title text-white">
                         방이름
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    <li class="nav-item dropdown ">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             메뉴
                         </a>
@@ -131,6 +109,20 @@
         </div>
         </div>
     </div>
+    <!-- 토스트 -->
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="false"">
+        <div class="toast-header">
+          <img src="..." class="rounded mr-2" alt="...">
+          <strong class="mr-auto">WebChat</strong>
+          <small class="text-muted">11 mins ago</small>
+          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="toast-body">
+          Hello, world! This is a toast message.
+        </div>
+      </div>
     <script src="/script.js"></script>
 </body>
 
